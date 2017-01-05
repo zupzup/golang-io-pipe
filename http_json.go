@@ -17,7 +17,7 @@ func HttpJson() {
 	// create the pipe
 	pr, pw := io.Pipe()
 
-	go func() {
+	go func(pw *io.PipeWriter) {
 		// close the writer, so the reader knows there's no more data
 		defer pw.Close()
 
@@ -25,7 +25,7 @@ func HttpJson() {
 		if err := json.NewEncoder(pw).Encode(&PayLoad{Content: "Hello Pipe!"}); err != nil {
 			log.Fatal(err)
 		}
-	}()
+	}(pw)
 
 	// the json from the pipewriter lands in the pipereader
 	// and we send it off...
